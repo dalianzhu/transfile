@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option go_package = "github.com/dalianzhu/transfile/proto";
+
+package transfile.proto;
+
+service TranFileAgent {
+        rpc Put (stream Data) returns (stream Data);
+        rpc Get (stream Data) returns (stream Data);
+}
+
+message Data {
+    map<string, string> head  = 1;
+    bytes data = 2;
+}
