@@ -12,7 +12,7 @@ export address=127.0.0.1:9886
 
 export code=1
 
-./transfile -m put -f ./file.tgz
+./transfile put -f ./file.tgz
 
 ## get文件
 export address=127.0.0.1:9886
@@ -21,4 +21,4 @@ code与put的一致
 
 export code=1
 
-./transfile -m get -f ./filecp.tgz
+./transfile get -f ./filecp.tgz

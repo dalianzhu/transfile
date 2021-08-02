@@ -37,14 +37,20 @@ func Get(address, code, filepath string) error {
 	}
 	defer fi.Close()
 
+	totalData := 0
 	for {
 		rsp, err := client.Recv()
 		if err != nil {
 			return err
 		}
-		log.Printf("revc blk:%v", rsp.Head["blk"])
 		if rsp.Head["op"] == "continue" {
-			fi.Write(rsp.Data)
+			data, err := GUnzipData(rsp.Data)
+			if err != nil {
+				return err
+			}
+			fi.Write(data)
+			totalData += len(data)
+			log.Printf("revc:%v", totalData)
 			continue
 		} else if rsp.Head["op"] == "end" {
 			log.Printf("revc end")

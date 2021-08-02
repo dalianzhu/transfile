@@ -64,11 +64,10 @@ loop:
 			log.Printf("put recv error:%v", err)
 			break loop
 		}
-		op := data.Head["op"]
+		// op := data.Head["op"]
 		code := data.Head["code"]
 		blk := data.Head["blk"]
 		end := data.Head["end"]
-		log.Printf("op:%v code:%v blk:%v len:%v", op, code, blk, len(data.Data))
 		v, ok := insMap.Load(code)
 		if !ok {
 			ins := new(Ins)

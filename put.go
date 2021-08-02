@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"time"
 
@@ -32,8 +33,9 @@ func Put(address, code, filepath string) error {
 	defer fi.Close()
 	r := bufio.NewReader(fi)
 
-	buf := make([]byte, 10240) //一次读取多少个字节
+	buf := make([]byte, 1024*1024) //一次读取多少个字节
 	willEnd := false
+	totalSend := 0
 loop:
 	for {
 		n, err := r.Read(buf)
@@ -50,6 +52,10 @@ loop:
 	send:
 		for {
 			currentBlk++
+			zipChuck, err := GZipData(chunk)
+			if err != nil {
+				return err
+			}
 			data := &proto.Data{
 				Head: map[string]string{
 					"op":   "put",
@@ -57,7 +63,7 @@ loop:
 					"blk":  fmt.Sprint(currentBlk),
 					"end":  "",
 				},
-				Data: chunk,
+				Data: zipChuck,
 			}
 
 			if willEnd {
@@ -67,6 +73,7 @@ loop:
 			if err != nil {
 				return err
 			}
+
 			rsp, err := client.Recv()
 			if err != nil {
 				return err
@@ -77,6 +84,8 @@ loop:
 				time.Sleep(time.Second)
 				continue send
 			case "continue":
+				totalSend += len(chunk)
+				log.Printf("send: %v\n", totalSend)
 				break send
 			case "end":
 				client.CloseSend()
