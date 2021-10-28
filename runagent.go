@@ -68,6 +68,7 @@ loop:
 		code := data.Head["code"]
 		blk := data.Head["blk"]
 		end := data.Head["end"]
+		filePath := data.Head["filePath"]
 		v, ok := insMap.Load(code)
 		if !ok {
 			ins := new(Ins)
@@ -93,8 +94,9 @@ loop:
 				}
 				err := ins.GetSvr.Send(&proto.Data{
 					Head: map[string]string{
-						"op":  getOp,
-						"blk": blk,
+						"op":       getOp,
+						"blk":      blk,
+						"filePath": filePath,
 					},
 					Data: data.Data,
 				})

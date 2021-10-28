@@ -23,6 +23,10 @@ transfile -a 127.0.0.1:9886 -c 1 put hello.tgz
 接收文件：
 transfile -a 127.0.0.1:9886 -c 1 get hello.tgz 
 
+环境变量（可选）
+export f_address=127.0.0.1:9886
+export f_code=1
+
 参数：
 `, os.Args[0])
 		flag.PrintDefaults()
@@ -30,16 +34,16 @@ transfile -a 127.0.0.1:9886 -c 1 get hello.tgz
 	flag.Parse()
 
 	cmd := flag.Arg(0)
-	file := flag.Arg(1)
+	filePath := flag.Arg(1)
 
-	if os.Getenv("address") != "" && *address == "" {
-		*address = os.Getenv("address")
+	if os.Getenv("f_address") != "" && *address == "" {
+		*address = os.Getenv("f_address")
 	}
-	if os.Getenv("code") != "" && *code == "" {
-		*code = os.Getenv("code")
+	if os.Getenv("f_code") != "" && *code == "" {
+		*code = os.Getenv("f_code")
 	}
 
-	fmt.Printf("address:%v, code:%v, cmd:%v, file:%v\n", *address, *code, cmd, file)
+	fmt.Printf("address:%v, code:%v, cmd:%v, file:%v\n", *address, *code, cmd, filePath)
 	if *address == "" {
 		fmt.Println("地址为空")
 		return
@@ -49,20 +53,20 @@ transfile -a 127.0.0.1:9886 -c 1 get hello.tgz
 	case "agent":
 		runAgent()
 	case "get":
-		if err := checkFileAndCode(*code, file); err != nil {
-			fmt.Println(err)
+		if *code == "" {
+			fmt.Println("组编号为空")
 			return
 		}
-		err := Get(*address, *code, file)
+		err := Get(*address, *code, filePath)
 		if err != nil {
 			log.Printf("get error:%v", err)
 		}
 	case "put":
-		if err := checkFileAndCode(*code, file); err != nil {
+		if err := checkFileAndCode(*code, filePath); err != nil {
 			fmt.Println(err)
 			return
 		}
-		err := Put(*address, *code, file)
+		err := Put(*address, *code, filePath)
 		if err != nil {
 			log.Printf("put error:%v", err)
 		}

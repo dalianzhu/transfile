@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func Put(address, code, filepath string) error {
+func Put(address, code, filePath string) error {
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		return err
@@ -26,7 +26,7 @@ func Put(address, code, filepath string) error {
 	}
 
 	currentBlk := 0
-	fi, err := os.Open(filepath)
+	fi, err := os.Open(filePath)
 	if err != nil {
 		return err
 	}
@@ -58,10 +58,11 @@ loop:
 			}
 			data := &proto.Data{
 				Head: map[string]string{
-					"op":   "put",
-					"code": code,
-					"blk":  fmt.Sprint(currentBlk),
-					"end":  "",
+					"op":       "put",
+					"code":     code,
+					"blk":      fmt.Sprint(currentBlk),
+					"end":      "",
+					"filePath": filePath,
 				},
 				Data: zipChuck,
 			}

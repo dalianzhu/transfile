@@ -1,24 +1,22 @@
 ## 启动agent
 找个服务器，启动agent
+```
+transfile -a 127.0.0.1:9886 agent
+```
+收发文件需要先建立服务端
 
-./transfile -m agent
 
-## put文件
-设置address为服务器的地址
+## 发送文件：
+```
+transfile -a 127.0.0.1:9886 -c 1 put hello.tgz 
+```
 
-export address=127.0.0.1:9886
+## 接收文件：
+```
+transfile -a 127.0.0.1:9886 -c 1 get hello.tgz 
+transfile -a 127.0.0.1:9886 -c 1 get // 使用默认的名字
+```
 
-设置一个code，比如1，get文件的时候需要提供这个code
-
-export code=1
-
-./transfile put -f ./file.tgz
-
-## get文件
-export address=127.0.0.1:9886
-
-code与put的一致
-
-export code=1
-
-./transfile get -f ./filecp.tgz
+## 环境变量（可选）
+export f_address=127.0.0.1:9886
+export f_code=1

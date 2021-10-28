@@ -4,12 +4,13 @@ import (
 	"context"
 	"log"
 	"os"
+	"path"
 
 	"github.com/dalianzhu/transfile/proto"
 	"google.golang.org/grpc"
 )
 
-func Get(address, code, filepath string) error {
+func Get(address, code, filePath string) error {
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		return err
@@ -31,11 +32,7 @@ func Get(address, code, filepath string) error {
 		return err
 	}
 
-	fi, err := os.Create(filepath)
-	if err != nil {
-		return err
-	}
-	defer fi.Close()
+	var fi *os.File
 
 	totalData := 0
 	for {
@@ -44,6 +41,18 @@ func Get(address, code, filepath string) error {
 			return err
 		}
 		if rsp.Head["op"] == "continue" {
+			// 初始化文件
+			if fi == nil {
+				if filePath == "" {
+					filePath = rsp.Head["filePath"]
+				}
+				_, fileName := path.Split(filePath)
+				fi, err = os.Create(fileName)
+				if err != nil {
+					return err
+				}
+				defer fi.Close()
+			}
 			data, err := GUnzipData(rsp.Data)
 			if err != nil {
 				return err
