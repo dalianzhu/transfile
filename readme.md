@@ -7,14 +7,21 @@ transfile -a 127.0.0.1:9886 agent
 
 
 ## 发送文件：
+-c 为管道。不同的管道传送不同的文件。
+
+put的时候，put端会等待get端到来。
 ```
 transfile -a 127.0.0.1:9886 -c 1 put hello.tgz 
+# 配置环境变量后
+transfile put hello.tgz
 ```
 
 ## 接收文件：
 ```
 transfile -a 127.0.0.1:9886 -c 1 get hello.tgz 
 transfile -a 127.0.0.1:9886 -c 1 get // 使用默认的名字
+# 配置环境变量后
+transfile get // 使用默认的名字
 ```
 
 ## 环境变量（可选）
