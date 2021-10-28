@@ -18,5 +18,7 @@ transfile -a 127.0.0.1:9886 -c 1 get // 使用默认的名字
 ```
 
 ## 环境变量（可选）
+```
 export f_address=127.0.0.1:9886
 export f_code=1
+```
